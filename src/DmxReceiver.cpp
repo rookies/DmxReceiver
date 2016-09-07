@@ -1,6 +1,12 @@
 #include <DmxReceiver.h>
 #include <Arduino.h>
 
+/*
+ * Arduino module for receiving DMX signals.
+ * 
+ * Based on https://github.com/ktgow/dmx_serial_sender
+*/
+
 DmxReceiver::DmxReceiver(byte pin, unsigned int channels) : _lastRead(0) {
   /* Save pin number: */
   _pin = pin;

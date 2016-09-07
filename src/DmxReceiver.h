@@ -1,7 +1,6 @@
 #ifndef DmxReceiver_h
 #define DmxReceiver_h
 
-/* TODO: Description */
 class DmxReceiver {
   public:
     DmxReceiver(byte pin, unsigned int channels); /* TODO: channelOffset */
