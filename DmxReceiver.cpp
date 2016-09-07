@@ -2,7 +2,7 @@
 #include <Arduino.h>
 
 /*
- * Arduino module for receiving DMX signals.
+ * Arduino library for receiving DMX signals.
  * 
  * Based on https://github.com/ktgow/dmx_serial_sender
 */
@@ -106,11 +106,11 @@ bool DmxReceiver::_readPinUntilChange(unsigned char* pinValue, unsigned long* va
   /* Variable declaration: */
   unsigned long valueStart;
   /* Get start value: */
-  *pinValue = digitalRead(pinDmx);
+  *pinValue = digitalRead(_pin);
   /* Get start time: */
   valueStart = micros();
   /* Loop until pin change or timeout: */
-  while (digitalRead(pinDmx) == *pinValue) {
+  while (digitalRead(_pin) == *pinValue) {
     if ((micros() - valueStart) > timeoutUs) {
       /* Timeout, return failure: */
       return false;

@@ -1,5 +1,6 @@
 #ifndef DmxReceiver_h
 #define DmxReceiver_h
+#include <Arduino.h>
 
 class DmxReceiver {
   public:
