@@ -5,6 +5,7 @@
 class DmxReceiver {
   public:
     DmxReceiver(byte pin, unsigned int channels); /* TODO: channelOffset */
+    ~DmxReceiver();
     bool poll();
     byte getValue(unsigned int channel);
   private:

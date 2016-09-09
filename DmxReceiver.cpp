@@ -18,7 +18,9 @@ DmxReceiver::DmxReceiver(byte pin, unsigned int channels) : _lastRead(0) {
   _data = new byte[channels];
 }
 
-/* TODO: delete[] _data; in Deconstructor */
+DmxReceiver::~DmxReceiver() {
+  delete[] _data;
+}
 
 bool DmxReceiver::poll() {
   /* If less than 16ms passed, return false: */
