@@ -1,21 +1,10 @@
 #include <DmxReceiver.h>
 #include <Arduino.h>
 
-/*
- * Arduino library for receiving DMX signals.
- * 
- * Based on https://github.com/ktgow/dmx_serial_sender
-*/
-
-DmxReceiver::DmxReceiver(byte pin, unsigned int channels) : _lastRead(0) {
-  /* Save pin number: */
-  _pin = pin;
-  /* Save channel number: */
-  _channels = channels;
+DmxReceiver::DmxReceiver(byte pin, unsigned int channels) :
+  _lastRead{0}, _pin{pin}, _channels{channels}, _data{new byte[channels]} {
   /* Set pin as input: */
   pinMode(pin, INPUT);
-  /* Init data array: */
-  _data = new byte[channels];
 }
 
 DmxReceiver::~DmxReceiver() {
@@ -26,11 +15,11 @@ bool DmxReceiver::poll() {
   /* If less than 16ms passed, return false: */
   if (millis() - _lastRead <= 16) {
     return false;
-  };
+  }
   /* If pin is not HIGH, return false: */
   if (digitalRead(_pin) != HIGH) {
     return false;  
-  };
+  }
   /* Init variables: */
   int bytesRead = 0;
   memset(_data, 0, _channels);
@@ -45,7 +34,7 @@ bool DmxReceiver::poll() {
    * Read pin until change and return false if it doesn't change in 2 seconds,
    * wasn't HIGH on the beginning or changed its value in less than 89 ms:
   */
-  if (_readPinUntilChange(&pinValue, &valueTime, 2000) && (pinValue == HIGH) && (valueTime > 88)) {
+  if (readPinUntilChange(&pinValue, &valueTime, 2000) && (pinValue == HIGH) && (valueTime > 88)) {
     resetStart = micros();
     while (((*portInputRegister(port) & bit) == 0) && (micros() - resetStart < 88)) {}
     if (micros() - resetStart > 88) {
@@ -90,33 +79,35 @@ bool DmxReceiver::poll() {
       }
       interrupts();
       bytesRead = dataPtr - _data;
-    };
-  };
+    }
+  }
   /* Return true if we read bytes: */
-  return (bytesRead > 0);
+  if (bytesRead > 0) {
+    _lastRead = millis();
+    return true;
+  }
+  return false;
 }
 
 byte DmxReceiver::getValue(unsigned int channel) {
   if (channel < _channels) {
     return _data[channel];
-  } else {
-    return 0;
-  };
+  }
+  return 0;
 }
 
-bool DmxReceiver::_readPinUntilChange(unsigned char* pinValue, unsigned long* valueTime, unsigned long timeoutUs) {
-  /* Variable declaration: */
-  unsigned long valueStart;
+bool DmxReceiver::readPinUntilChange(unsigned char* pinValue,
+    unsigned long* valueTime, unsigned long timeoutUs) {
   /* Get start value: */
   *pinValue = digitalRead(_pin);
   /* Get start time: */
-  valueStart = micros();
+  unsigned long valueStart = micros();
   /* Loop until pin change or timeout: */
   while (digitalRead(_pin) == *pinValue) {
     if ((micros() - valueStart) > timeoutUs) {
       /* Timeout, return failure: */
       return false;
-    };
+    }
   }
   /* Calculate duration: */
   *valueTime = micros() - valueStart;
