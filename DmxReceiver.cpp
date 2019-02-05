@@ -33,7 +33,7 @@ bool DmxReceiver::poll() {
   };
   /* Init variables: */
   int bytesRead = 0;
-  memset(_data, 0, _channels); /* FIXME: Maybe doesn't work this way */
+  memset(_data, 0, _channels);
   unsigned char* dataPtr = _data;
   const unsigned char* dataEnd = dataPtr + _channels;
   const uint8_t bit = digitalPinToBitMask(_pin);
