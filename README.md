@@ -11,6 +11,9 @@ usable in an easy and clean way.
 You need to connect a DMX receiver (e.g. MAX485) to a pin of your Arduino to
 use this library.
 
+Tested with Arduino Nano (ATmega328P), but it should also work with other
+boards using the same microcontroller.
+
 ## Example code
 ```cpp
 #include <DmxReceiver.h>
